@@ -18,6 +18,8 @@ def aplicacao():
 
     cadastrando_funcionarios = True    
  
+    lista_de_funcionarios = list()
+
     while cadastrando_funcionarios:
         print "O que você deseja fazer?"
         print "1 - Incluir um funcionário"
@@ -67,7 +69,15 @@ def aplicacao():
 
             hoje = date.today()
 
-            print "\nFuncionário %s, CPF %s, cadastrado com sucesso em %s" % (nome.upper(), cpf, hoje.strftime('%d/%m/%Y'))
+            funcionario = {"cpf": cpf, 
+                           "nome": nome, 
+                           "telefone": telefone, 
+                           "salario": salario, 
+                           "data_de_admissao": data_de_admissao}
+
+            lista_de_funcionarios.append(funcionario)
+
+            print "\nFuncionário %s, CPF %s, cadastrado com sucesso em %s" % (funcionario['nome'].upper(), funcionario['cpf'], hoje.strftime('%d/%m/%Y'))
             
             salario_anual = salario * 12
 
@@ -89,6 +99,21 @@ def aplicacao():
             mensagem = "Removendo Funcionário"
             print mensagem.center(51, ":")
 
+            cpf_a_remover = raw_input("Informe o CPF do Funcionário que deseja remover: ")
+
+            funcionario_a_remover = [funcionario for funcionario in lista_de_funcionarios if funcionario["cpf"] == cpf_a_remover]
+
+            for funcionario in lista_de_funcionarios:
+                if funcionario["cpf"] == cpf_a_remover:
+                    funcionario_a_remover = funcionario
+                    break
+
+            if funcionario_a_remover:
+                lista_de_funcionarios.remove(funcionario_a_remover)
+                print "Funcionário com CPF %s removido " % cpf_a_remover
+            else:
+                print "Funcionário com CPF %s não encontrado " % cpf_a_remover
+
         elif opcao == "4":
             '''
                 Exibe os dados de um funcionário 
@@ -97,12 +122,25 @@ def aplicacao():
             mensagem = "Detalhe Funcionário"
             print mensagem.center(51, ":")
 
+            cpf_a_exibir = raw_input("Informe o CPF do Funcionário que deseja exibir: ")
+
+            funcionario_a_exibir = [funcionario for funcionario in lista_de_funcionarios if funcionario["cpf"] == cpf_a_exibir]
+
+            if funcionario_a_exibir:
+                funcionario_a_exibir = iter(funcionario_a_exibir).next()
+                print "%(nome)s [CPF: %(cpf)s | Tel: %(telefone)s | Salário: %(salario).2f | Data de Admissão: %(data_de_admissao)s] " % funcionario_a_exibir
+            else:
+                print "Funcionário com CPF %s não encontrado " % cpf_a_exibir
+
         elif opcao == "5":    
             '''
                 Exibe os dados de todos os funcionários
             '''
             mensagem = "Todos os Funcionários"
             print mensagem.center(51, ":")
+
+            for funcionario in lista_de_funcionarios:
+                print "%(nome)s [CPF: %(cpf)s | Tel: %(telefone)s | Salário: %(salario).2f | Data de Admissão: %(data_de_admissao)s] " % funcionario
 
         elif opcao == "6":
             '''
