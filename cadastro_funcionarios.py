@@ -108,11 +108,6 @@ def aplicacao():
 
             funcionario_a_remover = [funcionario for funcionario in lista_de_funcionarios if funcionario["cpf"] == cpf_a_remover]
 
-            for funcionario in lista_de_funcionarios:
-                if funcionario["cpf"] == cpf_a_remover:
-                    funcionario_a_remover = funcionario
-                    break
-
             if funcionario_a_remover:
                 lista_de_funcionarios.remove(funcionario_a_remover)
                 print "Funcionário com CPF %s removido " % cpf_a_remover
