@@ -132,7 +132,22 @@ elif opcao == "3":
 
 ```
 
-8) Observe que nos dois casos estamos percorrendo a lista de funcionários para selecionar o funcionário a ser exibido/removido e depois efetuando a operação, caso o funcionário tenha sido encontrado. Vamos utilizar uma list comprehension para escrever aquele loop em um jeito mais _pythonista_:
+8) Até o momento estamos permitindo que o usuário possa cadastrar funcionários com o mesmo CPF, mas não queremos que isto ocorra. Vamos utilizar um list comprehension para realizar uma verificação antes de adicionar o funcionário a `lista_de_funcionarios`:
+
+Imediatamente após receber o CPF a partir do teclado, faça:
+
+```python
+...
+cpf = raw_input("Informe o CPF: ")
+
+if cpf in [funcionario["cpf"] for funcionario in lista_de_funcionarios]:
+    print "\nCPF %s, já cadastrado\n" % cpf
+    continue
+...
+```
+
+
+9) Observe que nos dois casos estamos percorrendo a lista de funcionários para selecionar o funcionário a ser exibido/removido e depois efetuando a operação, caso o funcionário tenha sido encontrado. Vamos utilizar uma list comprehension mais elaborada para escrever aquele loop em um jeito mais _pythonista_:
 
 ```python
 
@@ -147,5 +162,6 @@ else:
     print "Funcionário com CPF %s não encontrado " % cpf_a_exibir
 
 ```
+(Repare que o list comprehension retorna uma nova lista com os funcionários que atenderam ao critério no _if_, que em nosso caso será um elemento só, então utilizamos iter(...).next() para obter este elemento.)
 
-(Repare que o list comprehension retorna uma nova lista com os funcionário que atenderam ao critério no _if_, no nosso caso um elemento só, então utilizamos iter(...).next() para obter este elemento)
+Aplique esta solução também ao remover.

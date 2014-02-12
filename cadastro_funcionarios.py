@@ -40,6 +40,11 @@ def aplicacao():
             print mensagem.center(51, ":")
 
             cpf = raw_input("Informe o CPF: ")
+
+            if cpf in [funcionario["cpf"] for funcionario in lista_de_funcionarios]:
+                print "\nCPF %s, já cadastrado\n" % cpf
+                continue
+
             nome = raw_input("Informe o nome: ")
             telefone = raw_input("Informe o telefone: ")
             salario = raw_input("Informe o salário (Ex: 2000.40): ")
