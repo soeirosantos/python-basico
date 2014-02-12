@@ -1,5 +1,8 @@
 # -*- coding: utf-8 -*-
  
+from decimal import Decimal
+from datetime import date
+
 def aplicacao():
     '''
         Programa que controla o cadastro de 
@@ -45,6 +48,8 @@ def aplicacao():
                 print "\nSalário informado inválido!\n"
                 continue
 
+            salario = Decimal(salario)
+
             data_de_admissao = raw_input("Informe a data de admissão (Ex: 22/01/2014): ")
 
             if not (len(data_de_admissao) == 10      and \
@@ -56,7 +61,17 @@ def aplicacao():
                 print "\nData de Admissão informada inválida!\n"
                 continue
 
-            print "\nFuncionário %s, CPF %s, cadastrado com sucesso.\n" % (nome.upper(), cpf)
+            dia, mes, ano = data_de_admissao.split("/")
+
+            data_de_admissao = date(int(ano), int(mes), int(dia))
+
+            hoje = date.today()
+
+            print "\nFuncionário %s, CPF %s, cadastrado com sucesso em %s" % (nome.upper(), cpf, hoje.strftime('%d/%m/%Y'))
+            
+            salario_anual = salario * 12
+
+            print "Salário anual: R$ %.2f\n" % salario_anual
 
         elif opcao == "2":
             '''
