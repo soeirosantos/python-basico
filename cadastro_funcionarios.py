@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from funcionarios import Funcionario, ListaDeFuncionarios, FuncionarioException
+from funcionarios import Funcionario, ListaDeFuncionarios, FuncionarioException, Gerente
 from datetime import date
 
 def aplicacao():
@@ -44,10 +44,23 @@ def aplicacao():
             telefone = raw_input("Informe o telefone: ")
             salario = raw_input("Informe o salário (Ex: 2000.40): ")
             data_de_admissao = raw_input("Informe a data de admissão (Ex: 22/01/2014): ")
+            
+            eh_gerente = raw_input("O funcionário é um gerente? (S/N) ")
+
+            if eh_gerente.upper() in ("S", "N"):
+                eh_gerente = eh_gerente.upper() == "S"
+            else:
+                print "\n Opção inválida. Escolha S ou N \n"
+                continue
 
             try:
 
-                funcionario = Funcionario(cpf, nome, telefone, salario, data_de_admissao)
+                if not eh_gerente:
+                    funcionario = Funcionario(cpf, nome, telefone, salario, data_de_admissao)
+                else:
+                    gratificacao = raw_input("Informe a gratificação: ")
+                    funcionario = Gerente(cpf, nome, telefone, salario, data_de_admissao, gratificacao)
+                
                 lista_de_funcionarios.adicionar(funcionario)
             
             except FuncionarioException, e:
