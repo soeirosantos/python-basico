@@ -3,24 +3,63 @@
 from decimal import Decimal
 from datetime import date
 
-def eh_salario_valido(salario):
-    '''
-        recebe um salário no formato 9999.99 e retorna
-        um False caso o formato seja inválido
-    '''
-    salario_sem_ponto = salario.replace(".","")
-    return salario_sem_ponto.isdigit()
+class Funcionario(object):
 
-def eh_data_valida(data):
-    '''
-        recebe uma data dd/MM/yyyy e retorna
-        um False caso o formato seja inválido
-    '''
-    return (len(data) == 10      and \
-            data[0:2].isdigit()  and \
-            data[3:5].isdigit()  and \
-            data[6:10].isdigit() and \
-            "/" in (data[2], data[3]))
+    def __init__(self, cpf, nome, telefone, salario, data_de_admissao):
+        self.cpf = cpf
+        self.nome = nome
+        self.telefone = telefone
+        self.salario = salario
+        self.data_de_admissao = data_de_admissao
+        
+    @property
+    def salario(self):
+        return self._salario
+
+    @property
+    def data_de_admissao(self):
+        return self._data_de_admissao
+
+    @salario.setter
+    def salario(self, value):
+        if self.eh_salario_valido(value):
+            self._salario = Decimal(value)
+
+    @data_de_admissao.setter
+    def data_de_admissao(self, value):
+        if self.eh_data_valida(value):
+            self._data_de_admissao = str_to_date(value)
+
+    def eh_salario_valido(self, salario):
+        '''
+            recebe um salário no formato 9999.99 e retorna
+            um False caso o formato seja inválido
+        '''
+        salario_sem_ponto = salario.replace(".","")
+        return salario_sem_ponto.isdigit()
+
+    def eh_data_valida(self, data):
+        '''
+            recebe uma data dd/MM/yyyy e retorna
+            um False caso o formato seja inválido
+        '''
+        return (len(data) == 10      and \
+                data[0:2].isdigit()  and \
+                data[3:5].isdigit()  and \
+                data[6:10].isdigit() and \
+                "/" in (data[2], data[3]))
+
+    @property
+    def salario_anual(self):
+        return self.salario * 12
+
+    def __str__(self):
+        return "%s [CPF: %s | Tel: %s | Salário: %.2f | Data de Admissão: %s] " % \
+                    (self.nome, 
+                     self.cpf, 
+                     self.telefone, 
+                     self._salario, 
+                     self._data_de_admissao.strftime('%d/%m/%Y'))
 
 
 def str_to_date(data):
@@ -31,30 +70,38 @@ def str_to_date(data):
     dia, mes, ano = data.split("/")
     return date(int(ano), int(mes), int(dia))
 
-def adicionar_funcionario(lista, funcionario):
-    '''
-        Adiciona um funcionário a lista
-    '''
-    lista.append(funcionario)
+class ListaDeFuncionarios(object):
 
-def obter_funcionario(lista, cpf):
-    '''
-        Obtém um funcionário da lista
-    '''
-    f = [funcionario for funcionario in lista if funcionario["cpf"] == cpf]
-    if f:
-        return iter(f).next()
+    def __init__(self):
+        self._values = list()
 
-def remover_funcionario(lista, cpf):
-    '''
-        Remove um funcionário da lista
-    '''
-    a_remover = obter_funcionario(lista, cpf)
-    if a_remover:
-        lista.remove(a_remover)
-        return True
-    else:
-        return False
+    def adicionar(self, funcionario):
+        '''
+            Adiciona um funcionário a lista
+        '''
+        self._values.append(funcionario)
+
+    def obter(self, cpf):
+        '''
+            Obtém um funcionário da lista
+        '''
+        f = [funcionario for funcionario in self._values if funcionario.cpf == cpf]
+        if f:
+            return iter(f).next()
+
+    def remover(self, cpf):
+        '''
+            Remove um funcionário da lista
+        '''
+        a_remover = self.obter(cpf)
+        if a_remover:
+            self._values.remove(a_remover)
+            return True
+        else:
+            return False
+
+    def todos(self):
+        return self._values
 
 def aplicacao():
     '''
@@ -71,7 +118,7 @@ def aplicacao():
 
     cadastrando_funcionarios = True    
  
-    lista_de_funcionarios = list()
+    lista_de_funcionarios = ListaDeFuncionarios()
 
     while cadastrando_funcionarios:
         print "O que você deseja fazer?"
@@ -94,43 +141,23 @@ def aplicacao():
 
             cpf = raw_input("Informe o CPF: ")
 
-            if obter_funcionario(lista_de_funcionarios, cpf):
+            if lista_de_funcionarios.obter(cpf):
                 print "\nCPF %s, já cadastrado\n" % cpf
                 continue
 
             nome = raw_input("Informe o nome: ")
             telefone = raw_input("Informe o telefone: ")
             salario = raw_input("Informe o salário (Ex: 2000.40): ")
-
-            if not eh_salario_valido(salario):
-                print "\nSalário informado inválido!\n"
-                continue
-
-            salario = Decimal(salario)
-
             data_de_admissao = raw_input("Informe a data de admissão (Ex: 22/01/2014): ")
 
-            if not eh_data_valida(data_de_admissao):
-                print "\nData de Admissão informada inválida!\n"
-                continue
+            funcionario = Funcionario(cpf, nome, telefone, salario, data_de_admissao)
 
-            data_de_admissao = str_to_date(data_de_admissao)
+            lista_de_funcionarios.adicionar(funcionario)
 
             hoje = date.today()
-
-            funcionario = {"cpf": cpf, 
-                           "nome": nome, 
-                           "telefone": telefone, 
-                           "salario": salario, 
-                           "data_de_admissao": data_de_admissao}
-
-            adicionar_funcionario(lista_de_funcionarios, funcionario)
-
-            print "\nFuncionário %s, CPF %s, cadastrado com sucesso em %s" % (funcionario['nome'].upper(), funcionario['cpf'], hoje.strftime('%d/%m/%Y'))
+            print "\nFuncionário %s, CPF %s, cadastrado com sucesso em %s" % (funcionario.nome.upper(), funcionario.cpf, hoje.strftime('%d/%m/%Y'))
             
-            salario_anual = salario * 12
-
-            print "Salário anual: R$ %.2f\n" % salario_anual
+            print "Salário anual: R$ %.2f\n" % funcionario.salario_anual
 
         elif opcao == "2":
             '''
@@ -142,7 +169,7 @@ def aplicacao():
 
             cpf_a_atualizar = raw_input("Informe o CPF do Funcionário que deseja atualizar: ")
 
-            funcionario_a_atualizar = obter_funcionario(lista_de_funcionarios, cpf_a_atualizar)
+            funcionario_a_atualizar = lista_de_funcionarios.obter(cpf_a_atualizar)
 
             if not funcionario_a_atualizar:
                 print "Funcionário com CPF %s não encontrado " % cpf_a_atualizar
@@ -162,32 +189,22 @@ def aplicacao():
                 if opcao_atualizar == "1":
                     
                     novo_nome = raw_input("Informe o nome: ")
-                    funcionario_a_atualizar["nome"] = novo_nome
+                    funcionario_a_atualizar.nome = novo_nome
 
                 elif opcao_atualizar == "2":
 
                     novo_telefone = raw_input("Informe o telefone: ")
-                    funcionario_a_atualizar["telefone"] = novo_telefone
+                    funcionario_a_atualizar.telefone = novo_telefone
                 
                 elif opcao_atualizar == "3":
 
                     novo_salario = raw_input("Informe o salário: ")
-                    
-                    if not eh_salario_valido(novo_salario):
-                        print "\nSalário informado inválido!\n"
-                        continue
-
-                    funcionario_a_atualizar["salario"] = Decimal(novo_salario)
+                    funcionario_a_atualizar.salario = novo_salario
 
                 elif opcao_atualizar == "4":
 
                     data_de_admissao = raw_input("Informe a data de admissão (Ex: 22/01/2014): ")
-
-                    if not eh_data_valida(data_de_admissao):
-                        print "\nData de Admissão informada inválida!\n"
-                        continue
-
-                    funcionario_a_atualizar["data_de_admissao"] = str_to_date(data_de_admissao)
+                    funcionario_a_atualizar.data_de_admissao = data_de_admissao
 
                 atualizando_funcionario = False
 
@@ -203,7 +220,7 @@ def aplicacao():
 
             cpf_a_remover = raw_input("Informe o CPF do Funcionário que deseja remover: ")
 
-            removido = remover_funcionario(lista_de_funcionarios, cpf_a_remover)
+            removido = lista_de_funcionarios.remover(cpf_a_remover)
 
             if removido:
                 print "\nFuncionário com CPF %s removido\n " % cpf_a_remover
@@ -220,10 +237,10 @@ def aplicacao():
 
             cpf_a_exibir = raw_input("Informe o CPF do Funcionário que deseja exibir: ")
 
-            funcionario_a_exibir = obter_funcionario(lista_de_funcionarios, cpf_a_exibir)
+            funcionario_a_exibir = lista_de_funcionarios.obter(cpf_a_exibir)
 
             if funcionario_a_exibir:
-                print "%(nome)s [CPF: %(cpf)s | Tel: %(telefone)s | Salário: %(salario).2f | Data de Admissão: %(data_de_admissao)s] " % funcionario_a_exibir
+                print funcionario_a_exibir
             else:
                 print "\nFuncionário com CPF %s não encontrado\n " % cpf_a_exibir
 
@@ -234,8 +251,8 @@ def aplicacao():
             mensagem = "Todos os Funcionários"
             print mensagem.center(51, ":")
 
-            for funcionario in lista_de_funcionarios:
-                print "%(nome)s [CPF: %(cpf)s | Tel: %(telefone)s | Salário: %(salario).2f | Data de Admissão: %(data_de_admissao)s] " % funcionario
+            for funcionario in lista_de_funcionarios.todos():
+                print funcionario
 
         elif opcao == "6":
             '''

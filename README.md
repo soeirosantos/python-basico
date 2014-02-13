@@ -1,234 +1,339 @@
-## Cap 4) Funções e Módulos built-in
+## Cap 4) Orientação a Objetos
 
-Vamos começar a extrair nosso código em funções. Observe que nós temos muitos comportamentos que estão emaranhados ao esqueleto da aplicação: validação de dados de entrada, manipulação da lista de funcionários, exibição de dados, além das nossas operações principais em si.
+Nesse momento temos comportamentos e dados espalhados pela nossa aplicação. Estamos trabalhando com pelo menos dois conceitos bem definidos que podem ser bem representados por objetos: Os funcionários e a lista de funcionários. O objetivo aqui é melhorar a organização do código, facilitando leitura e etendimento, evolução, entre outros.
 
-Declare suas funções após os imports.
+1) Vamos começar trocando a estrutura de dados que armazena as informações de um funcionário do tipo dicionário para um tipo `Funcionario`. 
 
-1) Crie uma função para validar o salário informado. Esta função deve se chamar `eh_salario_valido`, receber o salário informado pelo usuário e retornar um booleano.
+a. Crie uma classe que, no momento da instanciação, deve popular atributos com os mesmos dados de um funcionário usados até agora:
 
-```python 
+```python
 
-def eh_salario_valido(salario):
-    '''
-        recebe um salário no formato 9999.99 e retorna
-        um False caso o formato seja inválido
-    '''
-    salario_sem_ponto = salario.replace(".","")
-    return salario_sem_ponto.isdigit()
+class Funcionario(object):
+
+    def __init__(self, cpf, nome, telefone, salario, data_de_admissao):
+        self.cpf = cpf
+        self.nome = nome
+        self.telefone = telefone
+        self.salario = salario
+        self.data_de_admissao = data_de_admissao
 
 ```
 
-Agora substitua o código que realiza a validação pela chamada a função:
+b. Agora troque o momento da criação do dicionário pela instanciação de nossa classe `Funcionario`:
 
-```python 
+```python
 ...
-salario = raw_input("Informe o salário (Ex: 2000.40): ")
+funcionario = Funcionario(cpf, nome, telefone, salario, data_de_admissao)
 
-if not salario_valido(salario):
-    print "\nSalário informado inválido!\n"
-    continue
+adicionar_funcionario(lista_de_funcionarios, funcionario)
 
-salario = Decimal(salario)
 ...
-
 ```
 
-2) Crie agora uma função para validar a data. Essa função deve se chamar `eh_data_valida`, receber a data informada pelo usuário e retornar um booleano:
+c. Precisamos acertar todos os lugares onde o dicionário é acessado através de uma chave para o acesso usando o atributo da classe Funcionario, como no exemplo abaixo:
 
-```python 
+    trocar funcionario["nome"] por funcionario.nome
 
-def eh_data_valida(data):
-    '''
-        recebe uma data dd/MM/yyyy e retorna
-        um False caso o formato seja inválido
-    '''
-    return (len(data) == 10      and \
-            data[0:2].isdigit()  and \
-            data[3:5].isdigit()  and \
-            data[6:10].isdigit() and \
-            "/" in (data[2], data[3]))
+d. Observe que na hora de exibir um funcionário estamos passando um dict para a String de impressão. É possível, facilmente, manter este código funcionando utilizando o atributo `__dict__`:
 
-```
-
-Substitua o código correspondente pela chamada a função.
-
-3) Aproveite e crie uma função que recebe a data informada pelo usuário, em formato String, e converte para o tipo date:
-
-```python 
-
-def str_to_date(data):
-    '''
-        Converte uma String no formado dd/MM/yyyy
-        em um date
-    '''
-    dia, mes, ano = data.split("/")
-    return date(int(ano), int(mes), int(dia))
-
-
-
-```
-
-Substitua o código correspondente pela chamada a função.
-
-4) Vamos criar funções para os comportamentos que manipulam nossa lista de funcionários:
-
-a. Inicie pela inclusão, que não faz nada além de adicionar o dicionário que representa os dados do nosso funcionário à lista de funcionários:
-
-
-```python 
-
-def adicionar_funcionario(lista, funcionario):
-    '''
-        Adiciona um funcionário a lista
-    '''
-    lista.append(funcionario)
-
-
-```
-
-b. Para exibir, vamos implementar uma função que obtenha os dados do funcionário a partir do CPF informado:
-
-```python 
-
-def obter_funcionario(lista, cpf):
-    '''
-        Obtém um funcionário da lista
-    '''
-    f = [funcionario for funcionario in lista if funcionario["cpf"] == cpf]
-    if f:
-        return iter(f).next()
-
-```
-
-Substitua o código correspondente pela chamada a função. Observe que desta vez a alteração não é tão direta quanto a anterior:
-
-```python 
-...
-
-cpf_a_exibir = raw_input("Informe o CPF do Funcionário que deseja exibir: ")
-
-funcionario_a_exibir = obter_funcionario(lista_de_funcionarios, cpf_a_exibir)
-
+```python
 if funcionario_a_exibir:
-    print "%(nome)s [CPF: %(cpf)s | Tel: %(telefone)s | Salário: %(salario).2f | Data de Admissão: %(data_de_admissao)s] " % funcionario_a_exibir
+    print "%(nome)s [CPF: %(cpf)s | Tel: %(telefone)s | Salário: %(salario).2f | Data de Admissão: %(data_de_admissao)s] " % funcionario_a_exibir.__dict__
 else:
     print "\nFuncionário com CPF %s não encontrado\n " % cpf_a_exibir
-
-...
-
 ```
 
-c. Implemente a remoção de funcionários. Faça a função de exclusão chamar a função de obter e retorne um booleano para informar se a exclusão ocorreu:
+(Isso é apenas para manter nosso código funcionando, vamos melhorar isso em instantes)
 
+Aplique, também, na exibição de funcionário no momento da listagem.
 
-```python 
+2) Agora que já trouxemos nossos dados para a classe `Funcionario` vamos trazer, também, nossos comportamentos. Veja que temos alguns comportamentos de validação em cima dos dados fornecidos pelo usuário.
 
-def remover_funcionario(lista, cpf):
-    '''
-        Remove um funcionário da lista
-    '''
-    a_remover = obter_funcionario(lista, cpf)
-    if a_remover:
-        lista.remove(a_remover)
-        return True
-    else:
-        return False
-
-
-```
-
-Atualizando o código fica:
-
-```python 
-...
-
-cpf_a_remover = raw_input("Informe o CPF do Funcionário que deseja remover: ")
-
-removido = remover_funcionario(cpf_a_remover)
-
-if removido:
-    print "\nFuncionário com CPF %s removido\n " % cpf_a_remover
-else:
-    print "\nFuncionário com CPF %s não encontrado\n " % cpf_a_remover
-
-...
-
-```
-
-(Altere, também, a verificação que checa se o CPF já está cadastrado utilizando a função `obter_funcionario`)
-
-5) Melhoramos bastante nosso código removendo várias duplicações. Vamos agora implementar a funcionalidade de alteração utilizando as funções que acabamos de criar. Ao acessar a funcionalidade de alteração o usuário deverá ser perguntado sobre qual dado deseja alterar e em seguida a aplicação deve processar a alteração:
-
-a. Implemente o menu de opções:
+a. Transfome as funções `eh_salario_valido` e `eh_data_valida` em métodos da nossa classe `Funcionario`:
 
 ```python
 
-...
+class Funcionario(object):
 
-cpf_a_atualizar = raw_input("Informe o CPF do Funcionário que deseja atualizar: ")
+    def __init__(self, cpf, nome, telefone, salario, data_de_admissao):
+        self.cpf = cpf
+        self.nome = nome
+        self.telefone = telefone
+        self.salario = salario
+        self.data_de_admissao = data_de_admissao
 
-funcionario_a_atualizar = obter_funcionario(lista_de_funcionarios, cpf_a_atualizar)
+    def eh_salario_valido(self, salario):
+        '''
+            recebe um salário no formato 9999.99 e retorna
+            um False caso o formato seja inválido
+        '''
+        salario_sem_ponto = salario.replace(".","")
+        return salario_sem_ponto.isdigit()
 
-if not funcionario_a_atualizar:
-    print "Funcionário com CPF %s não encontrado " % cpf_a_atualizar
-    continue
+    def eh_data_valida(self, data):
+        '''
+            recebe uma data dd/MM/yyyy e retorna
+            um False caso o formato seja inválido
+        '''
+        return (len(data) == 10      and \
+                data[0:2].isdigit()  and \
+                data[3:5].isdigit()  and \
+                data[6:10].isdigit() and \
+                "/" in (data[2], data[3]))
 
-atualizando_funcionario = True
-
-while atualizando_funcionario:
-    print "O que você deseja atualizar?"
-    print "1 - Nome"
-    print "2 - Telefone"
-    print "3 - Salário"
-    print "4 - Data de admissão"
-
-    opcao_atualizar = raw_input("Escolha uma opção a atualizar:")
-
-...
 
 ```
 
-b. Agora implemente a atualização:
+b. Agora, no método __init__, nós iremos tratar de toda a lógica relacionada a criação de um objeto do tipo funcionário válido. Faremos isso extraindo todo código validação e conversão que está espalhado na funcionalidade de inclusão (`opção 1`) para dentro do método `__init__`:
 
+```python
+...
+def __init__(self, cpf, nome, telefone, salario, data_de_admissao):
+    self.cpf = cpf
+    self.nome = nome
+    self.telefone = telefone
+
+    if self.eh_salario_valido(salario):
+        self.salario = Decimal(salario)
+
+    if self.eh_data_valida(data_de_admissao):
+        self.data_de_admissao = str_to_date(data_de_admissao)
+
+...
+```
+
+c. Depois de escrever esse código não esqueça de remover o código equivalente que está espalhado pela funcionalidade. Que ficará assim:
 
 ```python
 
-...
+if opcao == "1":
+    '''
+        Inclui um funcionário com os seguintes dados:
+        cpf, nome, telefone, salario, data_de_admissao
+    '''
+    mensagem = "Cadastrando Funcionário"
+    print mensagem.center(51, ":")
 
-if opcao_atualizar == "1":
-    
-    novo_nome = raw_input("Informe o nome: ")
-    funcionario_a_atualizar["nome"] = novo_nome
+    cpf = raw_input("Informe o CPF: ")
 
-elif opcao_atualizar == "2":
-
-    novo_telefone = raw_input("Informe o telefone: ")
-    funcionario_a_atualizar["telefone"] = novo_telefone
-
-elif opcao_atualizar == "3":
-
-    novo_salario = raw_input("Informe o salário: ")
-    
-    if not eh_salario_valido(novo_salario):
-        print "\nSalário informado inválido!\n"
+    if obter_funcionario(lista_de_funcionarios, cpf):
+        print "\nCPF %s, já cadastrado\n" % cpf
         continue
 
-    funcionario_a_atualizar["salario"] = Decimal(novo_salario)
+    nome = raw_input("Informe o nome: ")
+    telefone = raw_input("Informe o telefone: ")
+    salario = raw_input("Informe o salário (Ex: 2000.40): ")
+    data_de_admissao = raw_input("Informe a data de admissão (Ex: 22/01/2014): ")
+    
+    funcionario = Funcionario(cpf, nome, telefone, salario, data_de_admissao)
+
+    adicionar_funcionario(lista_de_funcionarios, funcionario)
+
+    hoje = date.today()
+
+    print "\nFuncionário %s, CPF %s, cadastrado com sucesso em %s" % (funcionario.nome.upper(), funcionario.cpf, hoje.strftime('%d/%m/%Y'))
+    
+    salario_anual = salario * 12
+
+    print "Salário anual: R$ %.2f\n" % salario_anual
+
+```
+
+(Observe que perdemos as nossas mensagens de aviso ao usuário. No próximo capítulo vamos resolver isso :)
+
+d. Repare que o cálculo do salário anual também é um comportamento do nosso funcionário, então vamos expô-lo através de uma propriedade de leitura:
+
+```python
+class Funcionario(object):
+
+    ...
+
+    @property
+    def salario_anual(self):
+        return self.salario * 12
+```
+
+Atualizando fica:
+
+```python
+...
+print "Salário anual: R$ %.2f\n" % funcionario.salario_anual
+...
+```
+
+3) Como você deve ter percebido, nossa funcionalidade de alteração (`opção 2`) não está mais funcionando, isso porque nós movemos as funções que fazem a validação para dentro da classe `Funcionario`. Se acertarmos este código e colocarmos para funcionar nós vamos perceber um problema: a validação do salário e da data de admissão ocorrem no método `__init__` o que significa que atribuindo valores diretamente, como estamos fazendo na alteração, irá deixar nosso objeto em um estado inválido. Para resolver isso vamos impedir a escrita direta aos atributos salario e data_de_admissao.
+
+a. O primeiro passo é renomar os nossos atributos adicionando um `_` na frente (significa que estes atributos são para uso interno, vide PEP8)
+
+```python
+
+class Funcionario(object):
+
+    def __init__(self, cpf, nome, telefone, salario, data_de_admissao):
+        self.cpf = cpf
+        self.nome = nome
+        self.telefone = telefone
+
+        if self.eh_salario_valido(salario):
+            self._salario = Decimal(salario)
+
+        if self.eh_data_valida(data_de_admissao):
+            self._data_de_admissao = str_to_date(data_de_admissao)
+
+
+    ...
+```
+
+b. Isso irá quebrar nosso código que acessa esses atributos, mas já sabemos como resolver isso, basta criar propriedades de leitura que mantenham o nome utilizado externamente:
+
+```python
+
+class Funcionario(object):
+
+    def __init__(self, cpf, nome, telefone, salario, data_de_admissao):
+        self.cpf = cpf
+        self.nome = nome
+        self.telefone = telefone
+
+        if self.eh_salario_valido(salario):
+            self._salario = Decimal(salario)
+
+        if self.eh_data_valida(data_de_admissao):
+            self._data_de_admissao = str_to_date(data_de_admissao)
+
+    @property
+    def salario(self):
+        return self._salario
+
+    @property
+    def data_de_admissao(self):
+        return self._data_de_admissao
+
+
+    ...
+
+```
+
+c. Ok, agora precisamos intervir no momento da atribuição de valores e implementar nosso tratamento. Então vamos criar propriedades de escrita para os atributos:
+
+```python
+
+class Funcionario(object):
+
+    def __init__(self, cpf, nome, telefone, salario, data_de_admissao):
+        self.cpf = cpf
+        self.nome = nome
+        self.telefone = telefone
+        self.salario = salario
+        self.data_de_admissao = data_de_admissao
+        
+    @property
+    def salario(self):
+        return self._salario
+
+    @property
+    def data_de_admissao(self):
+        return self._data_de_admissao
+
+    @salario.setter
+    def salario(self, value):
+        if self.eh_salario_valido(value):
+            self._salario = Decimal(value)
+
+    @data_de_admissao.setter
+    def data_de_admissao(self, value):
+        if self.eh_data_valida(value):
+            self._data_de_admissao = str_to_date(value)
+
+```
+
+d. Por fim, removemos todo o código desnecessário da funcionalidade de alteração, ficando:
+
+```python
+...
+
+ elif opcao_atualizar == "3":
+
+    novo_salario = raw_input("Informe o salário: ")
+    funcionario_a_atualizar.salario = novo_salario
 
 elif opcao_atualizar == "4":
 
     data_de_admissao = raw_input("Informe a data de admissão (Ex: 22/01/2014): ")
-
-    if not eh_data_valida(data_de_admissao):
-        print "\nData de Admissão informada inválida!\n"
-        continue
-
-    funcionario_a_atualizar["data_de_admissao"] = str_to_date(data_de_admissao)
-
-atualizando_funcionario = False
-
-print "\nFuncionário com CPF %s atualizado\n" % cpf_a_atualizar
+    funcionario_a_atualizar.data_de_admissao = data_de_admissao
 
 ...
+
+```
+
+4) Agora o ajuste final. Vamos criar um método chamado `__str__` que será utilizado por exibir uma saída amigável toda vez que usarmos `print`. Isso irá centralizar e padronizar a impressão dos dados de nossos funcionários. Crie esse método na nossa classe `Funcionario` e extraia para ele a String de exibição (conforme `opção 4`) fazendo os devidos ajustes:
+
+```python
+
+class Funcionario(object):
+
+    ...
+
+    def __str__(self):
+        return "%s [CPF: %s | Tel: %s | Salário: %.2f | Data de Admissão: %s] " % \
+                    (self.nome, 
+                     self.cpf, 
+                     self.telefone, 
+                     self._salario, 
+                     self._data_de_admissao.strftime('%d/%m/%Y'))
+
+```
+
+Atualize o código de exibição fazendo simplesmente:
+
+```python
+
+if funcionario_a_exibir:
+    print funcionario_a_exibir
+else:
+    print "\nFuncionário com CPF %s não encontrado\n " % cpf_a_exibir
+
+
+```
+
+(Atualize, também, na listagem)
+
+5) Faça o mesmo para a `lista_de_funcionarios`, agrupe dados e comportamentos em uma classe chamada `ListaDeFuncionarios` e acerte o código para chamar os métodos dessa classe, ao invés das funções. Ao final a classe ficará assim:
+
+```python
+
+class ListaDeFuncionarios(object):
+
+    def __init__(self):
+        self._values = list()
+
+    def adicionar(self, funcionario):
+        '''
+            Adiciona um funcionário a lista
+        '''
+        self._values.append(funcionario)
+
+    def obter(self, cpf):
+        '''
+            Obtém um funcionário da lista
+        '''
+        f = [funcionario for funcionario in self._values if funcionario.cpf == cpf]
+        if f:
+            return iter(f).next()
+
+    def remover(self, cpf):
+        '''
+            Remove um funcionário da lista
+        '''
+        a_remover = self.obter(cpf)
+        if a_remover:
+            self._values.remove(a_remover)
+            return True
+        else:
+            return False
+
+    def todos(self):
+        return self._values
+
 
 ```
