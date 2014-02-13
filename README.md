@@ -2,21 +2,19 @@
 
 1) Vamos começar melhorando a organização do nosso código. O arquivo `cadastro_funcionarios.py` já está muito grande, dificultando a leitura do código e evolução. Vamos criar um módulo para conter toda a implementação relacionada a funcionários.
 
-a. No mesmo diretório do arquivo cadastro_funcionarios.py crie um arquivo chamado `__init__.py` vazio;
+a. No mesmo diretório do arquivo `cadastro_funcionarios.py` crie um arquivo chamado `__init__.py` vazio;
 
 b. Agora crie um arquivo chamado `funcionarios.py` e mova para ele o código das classes `Funcionario`, `ListaDeFuncionarios` e da função `str_to_date` (não esqueça de mover os imports utilizados por estas classes);
 
-c. Adicione no arquivo cadastro_funcionarios.py o import das classes:
+c. Adicione no arquivo `cadastro_funcionarios.py` o import das classes:
 
 ```python
-
 from funcionarios import Funcionario, ListaDeFuncionarios
-
 ```
 
 2) Estamos fazendo um tratamento bem básico nos dados de entrada `data_de_admissao` e `salario`. Na hora que vamos criar os objetos `date` e `Decimal` vários problemas podem ocorrer além das situações que estamos verificando. Não queremos que a execução do nosso programa pare por situações inesperadas, então vamos melhorar o nosso tratamento de erro.
 
-(Ex: 222.222.22 irá lançar decimal.InvalidOperation e 20/13/2011 irá lançar ValueError)
+(Ex: 222.222.22 irá lançar `decimal.InvalidOperation` e 20/13/2011 irá lançar `ValueError`)
 
 a. Na propriedade de escrita `salario` faça:
 
@@ -33,6 +31,8 @@ def salario(self, salario):
     else:
         self._salario = Decimal(0)
 ```
+
+(Não esqueça de adicionar o import para `InvalidOperation`)
 
 b. Na propriedade de escrita `data_de_admissao` faça:
 
@@ -169,7 +169,7 @@ print "\nFuncionário com CPF %s atualizado\n" % cpf_a_atualizar
 
 ```
 
-5) Outro ponto onde podemos utilizar nossa exceção é para verificar se já existe um CPF cadastrado e com isso extrair a lógica de verificação para o método `adicionar` da classe `ListaDeFuncionarios`, ficaria assim:
+5) Outro ponto onde podemos utilizar nossa exceção é para verificar se já existe um CPF cadastrado e, com isso, extrair a lógica de verificação para o método `adicionar` da classe `ListaDeFuncionarios`, ficará assim:
 
 ```python
 
