@@ -30,9 +30,9 @@ adicionar_funcionario(lista_de_funcionarios, funcionario)
 ...
 ```
 
-c. Precisamos acertar todos os lugares onde o dicionário é acessado através de uma chave para o acesso usando o atributo da classe Funcionario, como no exemplo abaixo:
+c. Precisamos acertar todos os lugares onde o dicionário é acessado através de uma chave para o acesso usando o atributo da classe `Funcionario`, como no exemplo abaixo:
 
-    trocar funcionario["nome"] por funcionario.nome
+    __trocar__ funcionario["nome"] __por__ funcionario.nome
 
 d. Observe que na hora de exibir um funcionário estamos passando um dict para a String de impressão. É possível, facilmente, manter este código funcionando utilizando o atributo `__dict__`:
 
@@ -84,7 +84,7 @@ class Funcionario(object):
 
 ```
 
-b. Agora, no método __init__, nós iremos tratar de toda a lógica relacionada a criação de um objeto do tipo funcionário válido. Faremos isso extraindo todo código validação e conversão que está espalhado na funcionalidade de inclusão (`opção 1`) para dentro do método `__init__`:
+b. Agora, no método `__init__`, nós iremos tratar de toda a lógica relacionada a criação de um objeto do tipo `Funcionario` válido. Faremos isso extraindo o código de validação e conversão que está espalhado na funcionalidade de inclusão (`opção 1`) para dentro do método `__init__`:
 
 ```python
 ...
@@ -161,9 +161,9 @@ print "Salário anual: R$ %.2f\n" % funcionario.salario_anual
 ...
 ```
 
-3) Como você deve ter percebido, nossa funcionalidade de alteração (`opção 2`) não está mais funcionando, isso porque nós movemos as funções que fazem a validação para dentro da classe `Funcionario`. Se acertarmos este código e colocarmos para funcionar nós vamos perceber um problema: a validação do salário e da data de admissão ocorrem no método `__init__` o que significa que atribuindo valores diretamente, como estamos fazendo na alteração, irá deixar nosso objeto em um estado inválido. Para resolver isso vamos impedir a escrita direta aos atributos salario e data_de_admissao.
+3) Como você deve ter percebido, nossa funcionalidade de alteração (`opção 2`) não está mais funcionando, isso porque nós movemos as funções que fazem a validação para dentro da classe `Funcionario` e não corrigimos o código. Se acertarmos este código e colocarmos para funcionar nós vamos perceber um problema: a validação do salário e da data de admissão ocorrem no método `__init__`, o que significa que atribuindo valores diretamente, como estamos fazendo na alteração, irá deixar nosso objeto em um estado inválido. Para resolver isso vamos impedir a escrita direta aos atributos `salario` e `data_de_admissao`.
 
-a. O primeiro passo é renomar os nossos atributos adicionando um `_` na frente (significa que estes atributos são para uso interno, vide PEP8)
+a. O primeiro passo é renomear os nossos atributos adicionando um `_` na frente (significa que estes atributos são para uso interno, vide PEP8)
 
 ```python
 
@@ -214,7 +214,7 @@ class Funcionario(object):
 
 ```
 
-c. Ok, agora precisamos intervir no momento da atribuição de valores e implementar nosso tratamento. Então vamos criar propriedades de escrita para os atributos:
+c. Ok, agora precisamos intervir no momento da atribuição de valores e implementar nosso tratamento. Então vamos criar propriedades de escrita para os atributos, já movendo o código de validação e conversão:
 
 ```python
 
@@ -266,7 +266,7 @@ elif opcao_atualizar == "4":
 
 ```
 
-4) Agora o ajuste final. Vamos criar um método chamado `__str__` que será utilizado por exibir uma saída amigável toda vez que usarmos `print`. Isso irá centralizar e padronizar a impressão dos dados de nossos funcionários. Crie esse método na nossa classe `Funcionario` e extraia para ele a String de exibição (conforme `opção 4`) fazendo os devidos ajustes:
+4) Agora o ajuste final. Vamos criar um método chamado `__str__` que será utilizado por exibir uma saída amigável toda vez que usarmos `print` em cima de um objeto do tipo `Funcionario`. Isso irá centralizar e padronizar a impressão dos dados de nossos funcionários. Crie esse método na nossa classe `Funcionario` e extraia para ele a String de exibição (conforme `opção 4`) fazendo os devidos ajustes:
 
 ```python
 
@@ -298,7 +298,7 @@ else:
 
 (Atualize, também, na listagem)
 
-5) Faça o mesmo para a `lista_de_funcionarios`, agrupe dados e comportamentos em uma classe chamada `ListaDeFuncionarios` e acerte o código para chamar os métodos dessa classe, ao invés das funções. Ao final a classe ficará assim:
+5) Siga os mesmos passos para a `lista_de_funcionarios`, agrupe dados e comportamentos em uma classe chamada `ListaDeFuncionarios` e acerte o código para chamar os métodos dessa classe, ao invés das funções. Ao final a classe ficará assim:
 
 ```python
 
@@ -337,3 +337,5 @@ class ListaDeFuncionarios(object):
 
 
 ```
+
+(Observe que para ficar semanticamente mais agradável modificamos os nomes dos métodos)
