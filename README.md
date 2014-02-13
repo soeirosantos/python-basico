@@ -1,118 +1,11 @@
-## Cap 1) Iniciando a aplicação; Trabalhando com Strings
+## Cap 2) Números, Datas e Conversão de Tipos
 
-Vamos trabalhar em cima de uma aplicação de cadastro de funcionários, construindo as principais funcionalidades relativas a Inclusão (Create), Leitura (Read), Atualização (Update) e Exclusão (Delete) de funcionários (CRUD). Iremos evoluir de maneira gradativa aplicando os recursos e conceitos que estamos aprendendo em Python até alcançar um nível bem maduro.
-
-1) Copie o arquivo %%LOCAL%%/cadastro_funcionarios.py que contém o esqueleto da aplicação que iremos evoluir. Abra o arquivo e veja que a variável `opcao` recebe através da função `raw_input()` qual funcionalidade deve ser executada. A variável `cadastrando_funcionarios` permite que nossa aplicação continue executando dentro do bloco `while` enquanto o usuário não informar o contrário (opção 6).
-
-2) Vamos começar identificando nossas funcionalidades, fazendo a implementação mais básica possível em cada uma delas. Imprima uma mensagem que identifique cada funcionalidade:
+1) Vamos iniciar convertendo o salário informado pelo usuário em um número de ponto flutuante para que possamos efetuar operações em cima dele. Após a validação, faça:
 
 ```python
 
 ...
 
-if opcao == "1":
-    '''
-        Inclui um funcionário com os seguintes dados:
-        cpf, nome, telefone, salario, data_de_admissao
-    '''
-    mensagem = "Cadastrando Funcionário"
-    print mensagem.center(51, ":")
-
-elif opcao == "2":
-    '''
-       Altera as informações de um funcionário
-       específico a partir do CPF informado
-    '''
-    mensagem = "Atualizando Funcionário"
-    print mensagem.center(51, ":")
-
-elif opcao == "3":
-    '''
-       Remove um funcionario específico
-        a partir do CPF informado
-    '''
-    mensagem = "Removendo Funcionário"
-    print mensagem.center(51, ":")
-
-elif opcao == "4":
-    '''
-        Exibe os dados de um funcionário 
-        específico a partir do CPF informado
-    '''
-    mensagem = "Detalhe Funcionário"
-    print mensagem.center(51, ":")
-
-elif opcao == "5":    
-    '''
-        Exibe os dados de todos os funcionários
-    '''
-    mensagem = "Todos os Funcionários"
-    print mensagem.center(51, ":")
-...
-
-```
-
-Para melhorar a visualização, ao final do programa imprima 100 vezes o caracter ":":
-
-```python
-...
-    else:
-        print "\nOpção não encontrada, por favor selecione um valor de 1 a 6.\n"
-    
-    print ":" * 50
-print "\n:: CONTROLE DE FUNCIONARIOS FINALIZADO ::\n"
-...
-```
-
-3) Inicie a funcionalidade de `Inclusão` lendo a partir do teclado os dados de um funcionário (`cpf`, `nome`, `telefone`, `salario` e `data_de_admissao`):
-
-```python
-...
-
-if opcao == "1":
-    '''
-        Inclui um funcionário com os seguintes dados:
-        cpf, nome, telefone, salario, data_de_admissao
-    '''
-    mensagem = "Cadastrando Funcionário"
-    print mensagem.center(51, ":")
-
-    cpf = raw_input("Informe o CPF: ")
-    nome = raw_input("Informe o nome: ")
-    telefone = raw_input("Informe o telefone: ")
-    salario = raw_input("Informe o salário (Ex: 2000.40): ")
-    data_de_admissao = raw_input("Informe a data de admissão (Ex: 22/01/2014): ")
-...
-```
-
-4) Gere uma mensagem para o usuário com os dados do funcionário que acabaram de ser informados.
-
-```python
-...
-
-if opcao == "1":
-	...
-    salario = raw_input("Informe o salario (Ex: 2000,40): ")
-    data_de_admissao = raw_input("Informe a data de admissão (Ex: 22/01/2014): ")
-
-    print "Funcionário %s, CPF %s cadastrado com sucesso." % (nome, cpf)
-...
-
-```
-
-5) Formate o nome para exibir em caixa alta na mensagem de cadastro realizado:
-
-```python
-print "Funcionário %s, CPF %s cadastrado com sucesso." % (nome.upper(), cpf)
-```
-
-6) Observe que não estamos fazendo nenhuma verificação nos valores informados em `salario` e data_de_admissao`. Vamos usar mais alguns métodos de String para checar os dados informados pelo usuário.
-
-a. Verifique se o salário informado pelo usuário é um número:
-(observe que esta validação é bem simples e não pega todos os problemas com a entrada do salário, mas, por hora, atende aos nossos objetivos didáticos)
-
-```python
-...
 salario = raw_input("Informe o salário (Ex: 2000.40): ")
 
 salario_sem_ponto = salario.replace(".","")
@@ -120,24 +13,84 @@ salario_sem_ponto = salario.replace(".","")
 if not salario_sem_ponto.isdigit():
     print "\nSalário informado inválido!\n"
     continue
+
+salario = float(salario)
 ...
+
 ```
 
-b. Verifique se a data informada está no formato adequado
+2) Exiba a saída do salário anual do funcionário cadastrado logo após a mensagem que já estamos exibindo:
 
 ```python
 ...
+print "\nFuncionário %s, CPF %s, cadastrado com sucesso." % (nome.upper(), cpf)
 
-data_de_admissao = raw_input("Informe a data de admissão (Ex: 22/01/2014): ")
+salario_anual = salario * 12
+
+print "Salário anual: R$ %.2f\n" % salario_anual
+
+...
+
+```
+
+3) Vimos que utilizar `float` para trabalhar com valores monetários, ou que necessitam de precisão de uma maneira geral, não é uma boa escolha, então vamos melhorar nosso código utilizando o tipo Decimal:
+
+a. Comece fazendo o import no topo do arquivo: `from decimal import Decimal`
+
+b. Agora vamos reescrever a linha que converte o salário do tipo String em um tipo numérico, substituindo o float por Decimal:
+
+```python
+...
+if not salario_sem_ponto.isdigit():
+    print "\nSalário informado inválido!\n"
+    continue
+
+salario = Decimal(salario)
+
+...
+```
+
+Observe que nada mais muda em nosso código.
+
+4) Agora vamos criar um objeto que nos permita trabalhar com datas a partir da data informada:
+
+a. Inicie com o import no topo do arquivo `from datetime import date`
+
+b. Agora crie um objeto do tipo date:
+
+```python
 
 if not (len(data_de_admissao) == 10      and \
         data_de_admissao[0:2].isdigit()  and \
         data_de_admissao[3:5].isdigit()  and \
         data_de_admissao[6:10].isdigit() and \
         "/" in (data_de_admissao[2], data_de_admissao[3])):
+
     print "\nData de Admissão informada inválida!\n"
     continue
 
-print "\nFuncionário %s, CPF %s cadastrado com sucesso.\n" % (nome, cpf)
+dia = int(data_de_admissao[0:2])
+mes = int(data_de_admissao[3:5])
+ano = int(data_de_admissao[6:10])
+
+data_de_admissao = date(ano, mes, dia)
+
+```
+
+5) Agora vamos formatar a exibição de uma data a partir da data de criação do funcionário. Para isso obtenha a data corrente e inclua na mensagem de cadastro efetuado.
+
+
+```python
 ...
+
+dia, mes, ano = data_de_admissao.split("/")
+
+data_de_admissao = date(int(ano), int(mes), int(dia))
+
+hoje = date.today()
+
+print "\nFuncionário %s, CPF %s, cadastrado com sucesso em %s" % (nome.upper(), cpf, hoje.strftime('%d/%m/%Y'))
+
+...
+
 ```
