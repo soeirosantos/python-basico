@@ -31,63 +31,34 @@ def aplicacao():
                 Inclui um funcionário com os seguintes dados:
                 cpf, nome, telefone, salario, data_de_admissao
             '''
-            mensagem = "Cadastrando Funcionário"
-            print mensagem.center(51, ":")
-
-            cpf = raw_input("Informe o CPF: ")
-            nome = raw_input("Informe o nome: ")
-            telefone = raw_input("Informe o telefone: ")
-            salario = raw_input("Informe o salário (Ex: 2000.40): ")
-
-            salario_sem_ponto = salario.replace(".","")
-
-            if not salario_sem_ponto.isdigit():
-                print "\nSalário informado inválido!\n"
-                continue
-
-            data_de_admissao = raw_input("Informe a data de admissão (Ex: 22/01/2014): ")
-
-            if not (len(data_de_admissao) == 10      and \
-                    data_de_admissao[0:2].isdigit()  and \
-                    data_de_admissao[3:5].isdigit()  and \
-                    data_de_admissao[6:10].isdigit() and \
-                    "/" in (data_de_admissao[2], data_de_admissao[3])):
-
-                print "\nData de Admissão informada inválida!\n"
-                continue
-
-            print "\nFuncionário %s, CPF %s, cadastrado com sucesso.\n" % (nome.upper(), cpf)
+            pass
 
         elif opcao == "2":
             '''
                Altera as informações de um funcionário
                específico a partir do CPF informado
             '''
-            mensagem = "Atualizando Funcionário"
-            print mensagem.center(51, ":")
+            pass
 
         elif opcao == "3":
             '''
                Remove um funcionario específico
                 a partir do CPF informado
             '''
-            mensagem = "Removendo Funcionário"
-            print mensagem.center(51, ":")
+            pass
 
         elif opcao == "4":
             '''
                 Exibe os dados de um funcionário 
                 específico a partir do CPF informado
             '''
-            mensagem = "Detalhe Funcionário"
-            print mensagem.center(51, ":")
+            pass
 
         elif opcao == "5":    
             '''
                 Exibe os dados de todos os funcionários
             '''
-            mensagem = "Todos os Funcionários"
-            print mensagem.center(51, ":")
+            pass
 
         elif opcao == "6":
             '''
@@ -97,8 +68,7 @@ def aplicacao():
         
         else:
             print "\nOpção não encontrada, por favor selecione um valor de 1 a 6.\n"
-        
-        print ":" * 50
+ 
     print "\n:: CONTROLE DE FUNCIONARIOS FINALIZADO ::\n"
 
 if __name__ == "__main__":
