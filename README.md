@@ -1,112 +1,30 @@
-## Cap 3) Estruturas de Controle e Coleções
+## Cap 1) Iniciando a aplicação; Trabalhando com Strings
 
-1) Vamos começar a guardar nossos funcionários para que possamos acessar suas informações futuramente. Primeiro, precisamos de uma estrutura de dados que nos permita armazenar cada um dos atributos de um funcionário. Vamos criar um `dicionário` para receber os dados informados pelo usuário:
+Vamos trabalhar em cima de uma aplicação de cadastro de funcionários, construindo as principais funcionalidades relativas a Inclusão (Create), Leitura (Read), Atualização (Update) e Exclusão (Delete) de funcionários (CRUD). Iremos evoluir de maneira gradativa aplicando os recursos e conceitos que estamos aprendendo em Python até alcançar um nível bem maduro.
 
-```python
+1) Copie o arquivo %%LOCAL%%/cadastro_funcionarios.py que contém o esqueleto da aplicação que iremos evoluir. Abra o arquivo e veja que a variável `opcao` recebe através da função `raw_input()` qual funcionalidade deve ser executada. A variável `cadastrando_funcionarios` permite que nossa aplicação continue executando dentro do bloco `while` enquanto o usuário não informar o contrário (opção 6).
 
-...
-
-funcionario = {"cpf": cpf, 
-               "nome": nome, 
-               "telefone": telefone, 
-               "salario": salario, 
-               "data_de_ admissao": data_de_admissao}
-
-print "\nFuncionário %s, CPF %s, cadastrado com sucesso em %s" % (nome.upper(), cpf, hoje.strftime('%d/%m/%Y'))
-
-...
-
-```
-
-2) Utilize, agora, este dicionário para passar os dados para a mensagem de funcionário cadastrado:
-
-```python
-...
-
-print "\nFuncionário %s, CPF %s, cadastrado com sucesso em %s" % (funcionario['nome'].upper(), funcionario['cpf'], hoje.strftime('%d/%m/%Y'))
-
-...
-```
-
-3) Vamos armazenar cada funcionário criado em uma lista para acesso posterior. Para isso, exatamente antes de inciar o loop `while` principal da aplicação crie um objeto do tipo `list`:
+2) Vamos começar identificando nossas funcionalidades, fazendo a implementação mais básica possível em cada uma delas. Imprima uma mensagem que identifique cada funcionalidade:
 
 ```python
 
-print "\n:: SISTEMA DE CONTROLE DE FUNCIONÁRIOS ::\n"
-
-cadastrando_funcionarios = True    
-
-lista_de_funcionarios = list()
-
-while cadastrando_funcionarios:
-
-```
-
-Agora adicione o dicionário com os dados do funcionário cadastrado a essa lista:
-
-```python
 ...
-funcionario = {"cpf": cpf, 
-               "nome": nome, 
-               "telefone": telefone, 
-               "salario": salario, 
-               "data_de_admissao": data_de_admissao}
 
-lista_de_funcionarios.append(funcionario)
-
-...
-```
-
-4) Vamos implementar a funcionalidade da `opção 5`, que lista todos os funcionários cadastrados:
-
-```python
-
-elif opcao == "5":    
+if opcao == "1":
     '''
-        Exibe os dados de todos os funcionários
+        Inclui um funcionário com os seguintes dados:
+        cpf, nome, telefone, salario, data_de_admissao
     '''
-    mensagem = "Todos os Funcionários"
+    mensagem = "Cadastrando Funcionário"
     print mensagem.center(51, ":")
 
-    for funcionario in lista_de_funcionarios:
-        print "%(nome)s [CPF: %(cpf)s | Tel: %(telefone)s | Salário: %(salario)s | Data de Admissão: %(data_de_admissao)s] " % funcionario
-...
-
-```
-(Observe que não estamos formatando a data ainda, iremos melhorar isso mais a frente)
-
-5) Vamos exibir os dados de um funcionário específico, `opção 4`. Para isso, solicite ao usuário o cpf do funcionário a ser exibido e percorra a lista de funcionários:
-
-```python
-
-elif opcao == "4":
+elif opcao == "2":
     '''
-        Exibe os dados de um funcionário 
-        específico a partir do CPF informado
+       Altera as informações de um funcionário
+       específico a partir do CPF informado
     '''
-    mensagem = "Detalhe Funcionário"
+    mensagem = "Atualizando Funcionário"
     print mensagem.center(51, ":")
-
-    cpf_a_exibir = raw_input("Informe o CPF do Funcionário que deseja exibir: ")
-    funcionario_a_exibir = None
-
-    for funcionario in lista_de_funcionarios:
-        if funcionario["cpf"] == cpf_a_exibir:
-            funcionario_a_exibir = funcionario
-            break
-
-    if funcionario_a_exibir:
-        print "%(nome)s [CPF: %(cpf)s | Tel: %(telefone)s | Salário: %(salario).2f | Data de Admissão: %(data_de_admissao)s] " % funcionario_a_exibir
-    else:
-        print "\nFuncionário com CPF %s não encontrado\n " % cpf_a_exibir
-
-...
-
-```
-
-6) Podemos usar a mesma lógica implementada para exibir um funcionário, agora, para remover, na `opção 3`:
-
-```python
 
 elif opcao == "3":
     '''
@@ -116,52 +34,110 @@ elif opcao == "3":
     mensagem = "Removendo Funcionário"
     print mensagem.center(51, ":")
 
-    cpf_a_remover = raw_input("Informe o CPF do Funcionário que deseja remover: ")
-    funcionario_a_remover = None
+elif opcao == "4":
+    '''
+        Exibe os dados de um funcionário 
+        específico a partir do CPF informado
+    '''
+    mensagem = "Detalhe Funcionário"
+    print mensagem.center(51, ":")
 
-    for funcionario in lista_de_funcionarios:
-        if funcionario["cpf"] == cpf_a_remover:
-            funcionario_a_remover = funcionario
-            break
-
-    if funcionario_a_remover:
-        lista_de_funcionarios.remove(funcionario_a_remover)
-        print "\nFuncionário com CPF %s removido\n " % cpf_a_remover 
-    else:
-        print "\nFuncionário com CPF %s não encontrado\n " % cpf_a_remover
+elif opcao == "5":    
+    '''
+        Exibe os dados de todos os funcionários
+    '''
+    mensagem = "Todos os Funcionários"
+    print mensagem.center(51, ":")
+...
 
 ```
 
-7) Até o momento estamos permitindo que o usuário possa cadastrar funcionários com o mesmo CPF, mas não queremos que isto ocorra. Vamos utilizar um list comprehension para realizar uma verificação antes de adicionar o funcionário a `lista_de_funcionarios`:
-
-Imediatamente após receber o CPF a partir do teclado, faça:
+Para melhorar a visualização, ao final do programa imprima 100 vezes o caracter ":":
 
 ```python
 ...
-cpf = raw_input("Informe o CPF: ")
+    else:
+        print "\nOpção não encontrada, por favor selecione um valor de 1 a 6.\n"
+    
+    print ":" * 50
+print "\n:: CONTROLE DE FUNCIONARIOS FINALIZADO ::\n"
+...
+```
 
-if cpf in [funcionario["cpf"] for funcionario in lista_de_funcionarios]:
-    print "\nCPF %s, já cadastrado\n" % cpf
+3) Inicie a funcionalidade de `Inclusão` lendo a partir do teclado os dados de um funcionário (`cpf`, `nome`, `telefone`, `salario` e `data_de_admissao`):
+
+```python
+...
+
+if opcao == "1":
+    '''
+        Inclui um funcionário com os seguintes dados:
+        cpf, nome, telefone, salario, data_de_admissao
+    '''
+    mensagem = "Cadastrando Funcionário"
+    print mensagem.center(51, ":")
+
+    cpf = raw_input("Informe o CPF: ")
+    nome = raw_input("Informe o nome: ")
+    telefone = raw_input("Informe o telefone: ")
+    salario = raw_input("Informe o salário (Ex: 2000.40): ")
+    data_de_admissao = raw_input("Informe a data de admissão (Ex: 22/01/2014): ")
+...
+```
+
+4) Gere uma mensagem para o usuário com os dados do funcionário que acabaram de ser informados.
+
+```python
+...
+
+if opcao == "1":
+	...
+    salario = raw_input("Informe o salario (Ex: 2000,40): ")
+    data_de_admissao = raw_input("Informe a data de admissão (Ex: 22/01/2014): ")
+
+    print "Funcionário %s, CPF %s cadastrado com sucesso." % (nome, cpf)
+...
+
+```
+
+5) Formate o nome para exibir em caixa alta na mensagem de cadastro realizado:
+
+```python
+print "Funcionário %s, CPF %s cadastrado com sucesso." % (nome.upper(), cpf)
+```
+
+6) Observe que não estamos fazendo nenhuma verificação nos valores informados em `salario` e data_de_admissao`. Vamos usar mais alguns métodos de String para checar os dados informados pelo usuário.
+
+a. Verifique se o salário informado pelo usuário é um número:
+(observe que esta validação é bem simples e não pega todos os problemas com a entrada do salário, mas, por hora, atende aos nossos objetivos didáticos)
+
+```python
+...
+salario = raw_input("Informe o salário (Ex: 2000.40): ")
+
+salario_sem_ponto = salario.replace(".","")
+
+if not salario_sem_ponto.isdigit():
+    print "\nSalário informado inválido!\n"
     continue
 ...
 ```
 
-
-8) Observe que nos dois casos estamos percorrendo a lista de funcionários para selecionar o funcionário a ser exibido/removido e depois efetuando a operação, caso o funcionário tenha sido encontrado. Vamos utilizar uma list comprehension mais elaborada para escrever aquele loop em um jeito mais _pythonista_:
+b. Verifique se a data informada está no formato adequado
 
 ```python
+...
 
-cpf_a_exibir = raw_input("Informe o CPF do Funcionário que deseja exibir: ")
+data_de_admissao = raw_input("Informe a data de admissão (Ex: 22/01/2014): ")
 
-funcionario_a_exibir = [funcionario for funcionario in lista_de_funcionarios if funcionario["cpf"] == cpf_a_exibir]
+if not (len(data_de_admissao) == 10      and \
+        data_de_admissao[0:2].isdigit()  and \
+        data_de_admissao[3:5].isdigit()  and \
+        data_de_admissao[6:10].isdigit() and \
+        "/" in (data_de_admissao[2], data_de_admissao[3])):
+    print "\nData de Admissão informada inválida!\n"
+    continue
 
-if funcionario_a_exibir:
-    funcionario_a_exibir = iter(funcionario_a_exibir).next()
-    print "%(nome)s [CPF: %(cpf)s | Tel: %(telefone)s | Salário: %(salario).2f | Data de Admissão: %(data_de_admissao)s] " % funcionario_a_exibir
-else:
-    print "Funcionário com CPF %s não encontrado " % cpf_a_exibir
-
+print "\nFuncionário %s, CPF %s cadastrado com sucesso.\n" % (nome, cpf)
+...
 ```
-(Repare que o list comprehension retorna uma nova lista com os funcionários que atenderam ao critério no _if_, que em nosso caso será um elemento só, então utilizamos iter(...).next() para obter este elemento.)
-
-Aplique esta solução também ao remover.
