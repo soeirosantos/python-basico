@@ -81,32 +81,13 @@ class Funcionario(object):
         return self.salario * 12
 
     def __str__(self):
-        return "%s [CPF: %s | Tel: %s | Salário anual: %.2f | Data de Admissão: %s] " % \
+        return "%s [CPF: %s | Tel: %s | Salário: %.2f | Data de Admissão: %s] " % \
                     (self.nome, 
                      self.cpf, 
                      self.telefone, 
-                     self.salario_anual, 
+                     self._salario, 
                      self._data_de_admissao.strftime('%d/%m/%Y'))
 
-
-class Gerente(Funcionario):
-
-    def __init__(self, cpf, nome, telefone, salario, data_de_admissao, gratificacao):
-        Funcionario.__init__(self, cpf, nome, telefone, salario, data_de_admissao)
-        self._gratificacao = Decimal(gratificacao)
-
-    @property
-    def salario_anual(self):
-        return (self.salario * self._gratificacao) * 12
-
-    def __str__(self):
-        return "%s [CPF: %s | Tel: %s | Salário anual: %.2f | Gratificação total: %.2f | Data de Admissão: %s] " % \
-                    (self.nome, 
-                     self.cpf, 
-                     self.telefone, 
-                     self.salario_anual, 
-                     self._gratificacao * 12,
-                     self._data_de_admissao.strftime('%d/%m/%Y'))
 
 def str_to_date(data):
     '''
