@@ -3,6 +3,23 @@
 from decimal import Decimal, InvalidOperation
 from datetime import date
 
+def valido(eh_valido, msg_de_erro):
+    def onDecorator(funcao_verificada):
+        def onCall(self, valor_a_validar):
+            sucesso = True
+            if eh_valido(self, valor_a_validar):
+                try:
+                    return funcao_verificada(self, valor_a_validar)
+                except:
+                    sucesso = False
+            else:
+                sucesso = False
+
+            if not sucesso:
+                raise FuncionarioException(msg_de_erro)
+        return onCall
+    return onDecorator
+
 class FuncionarioException(Exception):
     
     def __init__(self, message):
@@ -16,46 +33,6 @@ class Funcionario(object):
         self.telefone = telefone
         self.salario = salario
         self.data_de_admissao = data_de_admissao
-        
-    @property
-    def salario(self):
-        return self._salario
-
-    @property
-    def data_de_admissao(self):
-        return self._data_de_admissao
-
-    @salario.setter
-    def salario(self, salario):
-
-        sucesso = True
-
-        if self.eh_salario_valido(salario):
-            try:
-                self._salario = Decimal(salario)
-            except InvalidOperation:
-                sucesso = False
-        else:
-            sucesso = False
-
-        if not sucesso:
-            raise FuncionarioException("Salário informado inválido!")
-
-    @data_de_admissao.setter
-    def data_de_admissao(self, data_de_admissao):
-
-        sucesso = True
-
-        if self.eh_data_valida(data_de_admissao):
-            try:
-                self._data_de_admissao = str_to_date(data_de_admissao)
-            except ValueError:
-                sucesso = False
-        else:
-            sucesso = False
-
-        if not sucesso:
-            raise FuncionarioException("Data de Admissão informada inválida!")
 
     def eh_salario_valido(self, salario):
         '''
@@ -75,6 +52,24 @@ class Funcionario(object):
                 data[3:5].isdigit()  and \
                 data[6:10].isdigit() and \
                 "/" in (data[2], data[3]))
+        
+    @property
+    def salario(self):
+        return self._salario
+
+    @salario.setter
+    @valido(eh_salario_valido, "Salário informado inválido!")
+    def salario(self, salario):
+        self._salario = Decimal(salario)
+
+    @property
+    def data_de_admissao(self):
+        return self._data_de_admissao
+
+    @data_de_admissao.setter
+    @valido(eh_data_valida, "Data de Admissão informada inválida!")
+    def data_de_admissao(self, data_de_admissao):
+        self._data_de_admissao = str_to_date(data_de_admissao)
 
     @property
     def salario_anual(self):
